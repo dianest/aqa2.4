@@ -8,8 +8,8 @@ build: off
 
 install:
 
-  - chmod +x artifacts/app-ibank-for-testers.jar
-  - ps: $App = Start-Process -FilePath java -ArgumentList "-jar ./artifacts/app-ibank-for-testers.jar" -PassThru
+  - chmod +x artifacts/app-ibank-build-for-testers.jar
+  - ps: $App = Start-Process -FilePath java -ArgumentList "-jar ./artifacts/app-ibank-build-for-testers.jar" -PassThru
   - chmod +x gradlew
 
 build_script:
