@@ -2,6 +2,7 @@ package ru.netology;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import lombok.val;
 import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Selenide.$$;
@@ -23,16 +24,13 @@ public class DashboardPage {
 
     public int getCardBalance(String id) {
         final String text = findCard(cards, id).getText();
-        final int startIndex = text.indexOf("баланс: ");
-        final String balanceText = text.substring(startIndex);
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < balanceText.length(); i++) {
-            if (Character.isDigit(balanceText.charAt(i))) {
-                sb.append(balanceText.charAt(i));
-            }
-        }
+        final String balanceStart = "баланс: ";
+        final String balanceFinish = " р.";
+        val start = text.indexOf(balanceStart);
+        val finish = text.indexOf(balanceFinish);
+        val value = text.substring(start + balanceStart.length(), finish);
 
-        return Integer.parseInt(sb.toString());
+        return Integer.parseInt(value);
     }
 
     public CardDepositPage depositToCard(String id) {
