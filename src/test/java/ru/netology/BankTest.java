@@ -1,6 +1,5 @@
 package ru.netology;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 
 import static com.codeborne.selenide.Selenide.open;
@@ -11,27 +10,31 @@ public class BankTest {
 
     @Test
     public void testTransfer() {
-        final User user = UserGenerator.generateValidUser();
+        final User user = DataGenerator.generateValidUser();
 
         open("http://localhost:9999/");
 
         final LoginPage loginPage = new LoginPage();
         final VerificationPage verificationPage = loginPage.loginValidUser(user.getLogin(), user.getPassword());
-        final DashboardPage dashboardPage = verificationPage.enterValidCode(user.getVerificationCode());
+        final DashboardPage dashboardPage = verificationPage.enterValidCode(DataGenerator.getVerificationCode());
 
-        assertThat(dashboardPage.getCardBalance(0), is("10000"));
-        assertThat(dashboardPage.getCardBalance(1), is("10000"));
+        final String firstCardId = dashboardPage.getFirstCardId();
+        final String secondCardId = dashboardPage.getSecondtCardId();
 
-        CardDepositPage depositPage = dashboardPage.depositToCard(0);
+        final int transferAmount = 5000;
+        final int firstCardBalance = dashboardPage.getCardBalance(firstCardId);
+        final int secondCardBalance = dashboardPage.getCardBalance(secondCardId);
 
-        depositPage.cancel();
-        assertThat(dashboardPage.getCardBalance(0), is("10000"));
-        assertThat(dashboardPage.getCardBalance(1), is("10000"));
+        CardDepositPage depositPage = dashboardPage.depositToCard(firstCardId);
+        depositPage.transfer(transferAmount, DataGenerator.getSecondCardNumber());
 
-        depositPage = dashboardPage.depositToCard(0);
+        final int firstCardExpectedBalance = firstCardBalance + transferAmount;
+        final int secondCardExpectedBalance = secondCardBalance - transferAmount;
 
-        depositPage.transfer("5000", "5559 0000 0000 0002");
-        assertThat(dashboardPage.getCardBalance(0), is("15000"));
-        assertThat(dashboardPage.getCardBalance(1), is("5000"));
+        final int firstCardNewBalance = dashboardPage.getCardBalance(firstCardId);
+        final int secondCardNewBalance = dashboardPage.getCardBalance(secondCardId);
+
+        assertThat(firstCardNewBalance, is(firstCardExpectedBalance));
+        assertThat(secondCardNewBalance, is(secondCardExpectedBalance));
     }
 }

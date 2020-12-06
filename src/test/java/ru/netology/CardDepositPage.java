@@ -1,28 +1,28 @@
 package ru.netology;
 
-import org.openqa.selenium.By;
+import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selenide.$;
 
 public class CardDepositPage {
-    private final By amountBy = By.cssSelector("[data-test-id=amount] input");
-    private final By fromBy = By.cssSelector("[data-test-id=from] input");
-    private final By transferBy = By.cssSelector("[data-test-id=action-transfer]");
-    private final By cancelBy = By.cssSelector("[data-test-id=action-cancel]");
+    private final SelenideElement amountInput = $("[data-test-id=amount] input");
+    private final SelenideElement fromInput = $("[data-test-id=from] input");
+    private final SelenideElement transferButton = $("[data-test-id=action-transfer]");
+    private final SelenideElement cancelButton = $("[data-test-id=action-cancel]");
 
     public CardDepositPage() {
     }
 
-    public DashboardPage transfer(String amount, String from) {
-        $(amountBy).sendKeys(amount);
-        $(fromBy).sendKeys(from);
-        $(transferBy).click();
+    public DashboardPage transfer(int amount, String from) {
+        amountInput.sendKeys(String.valueOf(amount));
+        fromInput.sendKeys(from);
+        transferButton.click();
 
         return new DashboardPage();
     }
 
     public DashboardPage cancel() {
-        $(cancelBy).click();
+        cancelButton.click();
 
         return new DashboardPage();
     }
