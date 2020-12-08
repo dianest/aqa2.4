@@ -1,4 +1,4 @@
-package ru.netology;
+package ru.netology.data;
 
 public class DataGenerator {
     private DataGenerator() {

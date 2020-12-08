@@ -1,14 +1,16 @@
-package ru.netology;
+package ru.netology.test;
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
+import ru.netology.data.DataGenerator;
+import ru.netology.data.User;
+import ru.netology.page.CardDepositPage;
+import ru.netology.page.DashboardPage;
+import ru.netology.page.LoginPage;
+import ru.netology.page.VerificationPage;
 
 import static com.codeborne.selenide.Selenide.open;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 
 public class BankTest {
 
@@ -62,8 +64,12 @@ public class BankTest {
         CardDepositPage depositPage = dashboardPage.depositToCard(firstCardId);
         depositPage.transfer(transferAmount, DataGenerator.getSecondCardNumber());
 
+        final int firstCardNewBalance = dashboardPage.getCardBalance(firstCardId);
         final int secondCardNewBalance = dashboardPage.getCardBalance(secondCardId);
 
-        assertThat(secondCardNewBalance, CoreMatchers.is(greaterThanOrEqualTo(0)));
+        assertThat(firstCardNewBalance, is(firstCardBalance));
+        assertThat(secondCardNewBalance, is(secondCardBalance));
+
+        depositPage.assertTransactionFailed();
     }
 }
